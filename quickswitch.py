@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # quickswitch for i3 - quickly change to and locate windows in i3.
 #
@@ -23,9 +23,10 @@
 __version__ = '2.3'
 
 import argparse
+import subprocess
+import shutil
 import os
 import re
-import subprocess
 
 workspace_number_re = re.compile('^(?P<number>\d+)(?P<name>.*)')
 default_dmenu_command = 'dmenu -b -i -l 20'
@@ -41,12 +42,7 @@ except ImportError:
 
 def check_dmenu():
     '''Check if dmenu is available.'''
-    with open(os.devnull, 'w') as f:
-        retcode = subprocess.call(["which", "dmenu"],
-                                  stdout=f,
-                                  stderr=f)
-        return retcode == 0
-
+    return bool(shutil.which('dmenu'))
 
 def dmenu(options, dmenu):
     '''Call dmenu with a list of options.'''
