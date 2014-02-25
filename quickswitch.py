@@ -61,8 +61,22 @@ def dmenu(options, dmenu):
 
 def get_windows():
     '''Get all windows.'''
-    windows = i3.filter(nodes=[])
+    windows = parse_tree(i3.get_tree(), [])
     return create_lookup_table(windows)
+
+
+def parse_tree(tree_dict, window_list):
+    if (tree_dict.has_key("nodes") and len(tree_dict["nodes"]) > 0):
+        for node in tree_dict["nodes"]:
+            parse_tree(node, window_list)
+    elif (tree_dict.has_key('floating_nodes') and len(tree_dict['floating_nodes']) > 0 ):
+        for node in tree_dict["floating_nodes"]:
+            parse_tree(node, window_list)
+    else:
+        if (tree_dict["layout"] != "dockarea" and not tree_dict["window"] == None):
+            window_list.append(tree_dict)
+
+    return window_list
 
 
 def find_window_by_regex(regex, move=False):
