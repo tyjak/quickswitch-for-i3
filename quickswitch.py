@@ -281,7 +281,14 @@ def main():
     lookup = lookup_func()
     target = dmenu(lookup.keys(), args.dmenu)
     id_ = lookup.get(target)
-    success = action_func(lookup.get(target)) if id_ is not None else False
+
+    if not id_ and args.workspaces:
+        # For workspace actions, we want to enable users to create new
+        # workspaces. Easily done by discarding the lookup result
+        # and just use what dmenu handed us to begin with.
+        id_ = target
+
+    success = action_func(id_) if id_ else False
 
     exit(0 if success else 1)
 
