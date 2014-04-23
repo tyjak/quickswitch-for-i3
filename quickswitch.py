@@ -41,7 +41,7 @@ def check_dmenu():
     retcode = subprocess.call(["which", "dmenu"],
                               stdout=devnull,
                               stderr=devnull)
-    return True if retcode == 0 else False
+    return retcode == 0
 
 
 def dmenu(options, dmenu):
