@@ -174,6 +174,9 @@ def move_window_here(window):
     return i3.msg(0, "{} move workspace current".format(
         i3.container(id=window)))
 
+def move_container_to_workspace(workspace):
+    '''Moves the current container to the selected workspace'''
+    return i3.msg(0, "move container to workspace {}".format(workspace))
 
 def rename_workspace(old, new):
     '''Rename a given workspace.'''
@@ -208,7 +211,7 @@ def cycle_numbered_workspaces(backwards=False):
 def main():
     parser = argparse.ArgumentParser(description='''quickswitch for i3''')
     parser.add_argument('-m', '--move', default=False, action="store_true",
-                        help="move window to the current workspace")
+                        help="move window to the current workspace. If specified together with -w, moves the current container to the selected workspace")
 
     mutgrp = parser.add_mutually_exclusive_group()
     mutgrp.add_argument('-s', '--scratchpad', default=False, action="store_true",
@@ -272,6 +275,8 @@ def main():
     action_func = focus
     if args.move:
         action_func = move_window_here
+        if args.workspaces:
+            action_func = move_container_to_workspace
     else:
         if args.scratchpad:
             action_func = get_scratchpad_window
