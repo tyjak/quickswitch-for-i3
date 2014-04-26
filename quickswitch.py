@@ -249,7 +249,7 @@ def main():
 
     # ...and regex search...
     if args.regex:
-        exit(0 if find_window_by_regex(args.regex, args.move) else 1)
+        exit(not find_window_by_regex(args.regex, args.move))
 
     # ...as well as workspace cycling
     if args.next or args.previous:
@@ -283,7 +283,7 @@ def main():
     id_ = lookup.get(target)
     success = action_func(lookup.get(target)) if id_ is not None else False
 
-    exit(0 if success else 1)
+    exit(not success)
 
 
 if __name__ == '__main__':
