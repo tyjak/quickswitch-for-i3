@@ -35,15 +35,6 @@ except ImportError:
     exit(1)
 
 
-def check_dmenu():
-    '''Check if dmenu is available.'''
-    devnull = open(os.devnull)
-    retcode = subprocess.call(["which", "dmenu"],
-                              stdout=devnull,
-                              stderr=devnull)
-    return True if retcode == 0 else False
-
-
 def dmenu(options, dmenu):
     '''Call dmenu with a list of options.'''
 
@@ -230,11 +221,6 @@ def main():
     parser.add_argument('-d', '--dmenu', default='dmenu -b -i -l 20', help='dmenu command, executed within a shell')
 
     args = parser.parse_args()
-
-    if not check_dmenu():
-        print("quickswitch requires dmenu.")
-        print("Please install it using your distribution's package manager.")
-        exit(1)
 
     # jumping to the next empty workspaces doesn't require going through all
     # the stuff below, as we don't need to call dmenu etc, so we just call it
