@@ -262,7 +262,6 @@ def main():
         else:
             exit(*i3.command("move container to workspace {}".format(target_ws)))
 
-
     lookup_func = get_windows
     if args.scratchpad:
         lookup_func = get_scratchpad
