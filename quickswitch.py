@@ -247,7 +247,11 @@ def create_lookup_table(windows):
                 ignore_window = True
                 break
         if ignore_window: continue
-        lookup[get_lookup_title(window)] = win_id
+        win_name = get_lookup_title(window)
+        if win_name in lookup:
+            # duplicate name of previous window -- add "(win_id)" as suffix in attempt to make unique
+            win_name = "{} ({})".format(win_name, str(win_id))
+        lookup[win_name] = win_id
     return lookup
 
 
