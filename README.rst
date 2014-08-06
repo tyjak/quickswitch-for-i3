@@ -33,6 +33,8 @@ You can also search and jump (or move) via regular expression using the
 scripting, or if you are a regex wizard who feels limited by dmenu. This
 works in conjunction with the ``-m`` and ``-j`` commands.
 
+To make your regex case insensitive, use ``-i/--insensitive``.
+
 If there are windows that have the urgency hint set, you can jump to the first
 one with the ``-u``/``--urgent`` flag.
 

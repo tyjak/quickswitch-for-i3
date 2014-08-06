@@ -85,15 +85,14 @@ def parse_for_windows(tree_dict, window_list):
     return window_list
 
 
-def find_window_by_regex(regex, move=False):
+def find_window_by_regex(regex, insensitive=False, move=False):
     '''Find the first window whose title matches regex and focus or move it.'''
     action = move_window_here if move else focus
 
-    contains_uppercase = any([x.isupper() for x in regex])
-    if contains_uppercase:
-        cr = re.compile(regex)
-    else:
+    if insensitive:
         cr = re.compile(regex, re.I)
+    else:
+        cr = re.compile(regex)
     for title, id in get_windows().items():
         if cr.match(title):
             action(id)
@@ -101,15 +100,14 @@ def find_window_by_regex(regex, move=False):
     return False
 
 
-def find_workspace_by_regex(regex, move=False):
+def find_workspace_by_regex(regex, insensitive=False):
     '''Find the first workspace whose title matches regex and move the current container to it.'''
     action = move_container_to_workspace
 
-    contains_uppercase = any([x.isupper() for x in regex])
-    if contains_uppercase:
-        cr = re.compile(regex)
-    else:
+    if insensitive:
         cr = re.compile(regex, re.I)
+    else:
+        cr = re.compile(regex)
     for title in get_workspaces().keys():
         if cr.match(title):
             action(title)
@@ -318,7 +316,10 @@ def main():
     mutgrp_2.add_argument('-u', '--urgent', default=False, action='store_true',
                         help='go to the first window with the urgency hint set')
 
-    parser.add_argument('-d', '--dmenu', default='dmenu -b -i -l 20', help='dmenu command, executed within a shell')
+    parser.add_argument('-d', '--dmenu', default='dmenu -b -i -l 20',
+                        help='dmenu command, executed within a shell')
+    parser.add_argument('-i', '--insensitive', default=False, action="store_true",
+                        help='make regexps case insensitive')
 
     args = parser.parse_args()
 
@@ -341,9 +342,9 @@ def main():
     # ...and regex search...
     if args.regex:
         if args.journey:
-            exit(os.EX_OK if find_workspace_by_regex(args.regex) else os.EX_NOTFOUND)
+            exit(os.EX_OK if find_workspace_by_regex(args.regex, args.insensitive) else os.EX_NOTFOUND)
         else:
-            exit(os.EX_OK if find_window_by_regex(args.regex, args.move) else os.EX_NOTFOUND)
+            exit(os.EX_OK if find_window_by_regex(args.regex, args.insensitive, args.move) else os.EX_NOTFOUND)
 
     # ...as well as workspace cycling
     if args.next or args.previous:
