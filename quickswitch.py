@@ -23,9 +23,10 @@ __version__ = '2.2'
 
 
 import argparse
-import subprocess
 import os
 import re
+import string
+import subprocess
 
 try:
     import i3
@@ -86,7 +87,11 @@ def find_window_by_regex(regex, move=False):
     '''Find the first window whose title matches regex and focus or move it.'''
     action = move_window_here if move else focus
 
-    cr = re.compile(regex)
+    contains_uppercase = any([x.isupper() for x in regex])
+    if contains_uppercase:
+        cr = re.compile(regex)
+    else:
+        cr = re.compile(regex, re.I)
     for title, id in get_windows().items():
         if cr.match(title):
             action(id)
