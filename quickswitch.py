@@ -28,6 +28,8 @@ import re
 import string
 import subprocess
 
+workspace_number_re = re.compile('^(?P<number>\d+).*')
+
 try:
     import i3
 except ImportError:
@@ -107,6 +109,31 @@ def get_scratchpad():
     return create_lookup_table(windows)
 
 
+def workspace_is_numbered(ws_name):
+    match = workspace_number_re.match(ws_name)
+    return not not match
+
+
+def get_workspace_number(ws_name):
+    match = workspace_number_re.match(ws_name)
+    if not match:
+        return 0
+    return int(match.group('number'))
+
+
+def get_workspace_numbers(ws_names):
+    return [get_workspace_number(ws) for ws in ws_names if workspace_is_numbered(ws)]
+
+
+def workspace_name_from_number(ws_number):
+    ws_names = get_workspaces().keys()
+    for ws in ws_names:
+        if workspace_is_numbered(ws):
+            if (ws_number == get_workspace_number(ws)):
+                return ws
+    return ws_number
+
+
 def get_workspaces():
     '''Returns all workspace names.
 
@@ -123,8 +150,7 @@ def get_workspaces():
 
 def next_empty():
     '''Return the lowest numbered workspace that is empty.'''
-    workspaces = sorted([int(ws) for ws in get_workspaces().keys()
-                         if ws.isdecimal()])
+    workspaces = sorted(get_workspace_numbers(get_workspaces().keys()))
     for i in range(len(workspaces)):
         if workspaces[i] != i + 1:
             return str(i + 1)
@@ -133,9 +159,8 @@ def next_empty():
 
 def next_used(number):
     '''Return the next used numbered workspace after the given number.'''
-    workspaces = sorted([int(ws) for ws in get_workspaces().keys()
-                         if ws.isdecimal()
-                         and int(ws) > number])
+    workspaces = sorted([ws for ws in get_workspace_numbers(get_workspaces().keys())
+                         if ws > number])
     return workspaces[0] if workspaces else None
 
 
@@ -224,10 +249,14 @@ def get_current_workspace():
 def cycle_numbered_workspaces(backwards=False):
     '''Get the next (previous) numbered workspace.'''
     current = get_current_workspace()
-    if not current.isdecimal():
+    if not workspace_is_numbered(current):
         return None
-    i = int(current)
-    return str(i + 1) if not backwards else str(i - 1)
+    i = get_workspace_number(current)
+    target_ws = i + 1
+    if backwards:
+        target_ws = i - 1
+    #TODO wrap at 0 and max
+    return str(workspace_name_from_number(target_ws))
 
 
 def main():
@@ -280,7 +309,7 @@ def main():
 
     # ...as well as workspace cycling
     if args.next or args.previous:
-        if not get_current_workspace().isdecimal:
+        if not workspace_is_numbered(get_current_workspace()):
             print("--next and --previous only work on numbered workspaces")
             exit(1)
         target_ws = cycle_numbered_workspaces(args.previous)
