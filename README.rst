@@ -36,9 +36,9 @@ works in conjunction with the ``-m`` and ``-j`` commands.
 
 To make your regex case insensitive, use ``-i/--insensitive``.
 
-If there are windows that have the urgency hint set, you can jump to the first
-one with the ``-u``/``--urgent`` flag. You can also use something like this in
-i3's own config: ``$mod+a [urgent="latest"] focus``.
+If there are windows that have the urgency hint set, you can jump to the
+first one with the ``-u``/``--urgent`` flag. You can also use something
+like this in i3's own config: ``$mod+a [urgent="latest"] focus``.
 
 Workspaces
 ~~~~~~~~~~
@@ -67,8 +67,8 @@ flag to move the currently focused container to the respective workspace
 instead. Note that -n and -p will only jump to existing workspaces,
 and if you go beyond the beginning or end of the numbered workspace
 list, it will wrap around. Also be aware that similar functionality is
-provided by i3 natively. See ``workspace next/previous_on_output`` (and)
-``workspace next/previous``.
+provided by i3 natively. See ``workspace {next,previous}_on_output`` and
+``workspace {next,previous}``.
 
 dmenu
 ~~~~~
@@ -124,3 +124,5 @@ head to http://sam.zoy.org/wtfpl/COPYING.
 
 .. _Pentadactyl: http://5digits.org/pentadactyl/
 .. _i3: http://i3wm.org
+
+.. vim: set tw=81:
