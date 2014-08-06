@@ -314,7 +314,7 @@ def main():
     mutgrp_2.add_argument('-r', '--regex',
                         help='find the first window matching the regex and focus/move it. Finds the first matching workspace when used with -j')
     mutgrp_2.add_argument('-g', '--degap', action='store_true',
-                        help='make numbered workspaces consecutive (remove gaps)')
+                        help='make numbered workspaces consecutive (remove gaps), does not work with other arguments')
     mutgrp_2.add_argument('-n', '--next', default=False, action='store_true',
                         help='go to the next (numbered) workspace')
     mutgrp_2.add_argument('-p', '--previous', default=False, action='store_true',
