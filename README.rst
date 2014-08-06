@@ -20,15 +20,18 @@ Here's how it looks in action:
 
 .. image:: http://i.imgur.com/QeQrM.png
 
-However, sometimes you may want to grab a window and move it to your current
-workspace. This can be done with the ``-m/--move`` flag.
+However, sometimes you may want to grab a window and move it to your
+current workspace. This can be done with the ``-m/--move`` flag.
+Conversely, you might want to send the current window or container on a
+``-j/--journey`` to another workspace.
 
 A similiar feature is the ``-s/--scratchpad`` flag, which searches your
 scratchpad, and does a ``scratchpad show`` on the window you choose.
 
 You can also search and jump (or move) via regular expression using the
 ``-r``/``--regex`` flag, without using dmenu. This could be useful for
-scripting, or if you are a regex wizard who feels limited by dmenu.
+scripting, or if you are a regex wizard who feels limited by dmenu. This
+works in conjunction with the ``-m`` and ``-j`` commands.
 
 If there are windows that have the urgency hint set, you can jump to the first
 one with the ``-u``/``--urgent`` flag.
@@ -54,9 +57,8 @@ While on numbered workspaces, it can be pretty handy to jump to the next or
 previous numbered workspace ("cycle" them). ``-p/--previous`` and ``-n/--next``
 do just that. What's more, you can combine them with the ``-m/--move`` flag to
 move the currently focused container to the respective workspace instead. Note
-that ``--previous`` will happily go to negative workspace numbers, which are
-then no longer treated as numbered by i3 (ie, they won't get sorted, like named
-workspaces).
+that -n and -p will only jump to existing workspaces, and if you go beyond the
+beginning or end of the numbered workspace list, it will wrap around.
 
 dmenu
 ~~~~~
