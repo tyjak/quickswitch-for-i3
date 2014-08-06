@@ -51,7 +51,8 @@ particular key.
 
 Another useful feature is to quickly get an empty workspace. This is
 what the ``-e/--empty`` flag does: it will jump you to the first empty,
-numbered workspace.
+numbered workspace. If used with ``-j/--journey``, it will send the
+currently selected container/window to a new empty workspace.
 
 If you use this excessively, then your numbered workspaces might
 fragment a lot. You can fix this easily with ``-g``/``--degap``, which

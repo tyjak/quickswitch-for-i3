@@ -301,7 +301,7 @@ def main():
     mutgrp_1.add_argument('-m', '--move', default=False, action="store_true",
                         help="move a chosen window to the current workspace. moves the current container to the selected workspace")
     mutgrp_1.add_argument('-j', '--journey', default=False, action="store_true",
-                        help="moves the current container to a chosen workspace")
+                        help="moves the current container to a chosen workspace. Moves it to a new empty workspace with -e")
 
     mutgrp_2 = parser.add_mutually_exclusive_group()
     mutgrp_2.add_argument('-s', '--scratchpad', default=False, action="store_true",
@@ -310,7 +310,7 @@ def main():
                         action="store_true",
                         help="list workspaces instead of windows")
     mutgrp_2.add_argument('-e', '--empty', default=False, action='store_true',
-                        help='go to the next empty, numbered workspace')
+                        help='go to the next empty, numbered workspace. Use with -j to send current window to a new empty workspace')
     mutgrp_2.add_argument('-r', '--regex',
                         help='find the first window matching the regex and focus/move it. Finds the first matching workspace when used with -j')
     mutgrp_2.add_argument('-g', '--degap', action='store_true',
@@ -333,7 +333,10 @@ def main():
     # the stuff below, as we don't need to call dmenu etc, so we just call it
     # here and exit if the appropriate flag was given.
     if args.empty:
-        exit(*goto_workspace(next_empty()))
+        if args.journey:
+            exit(*move_container_to_workspace(next_empty()))
+        else:
+            exit(*goto_workspace(next_empty()))
 
     # likewise for degapping...
     if args.degap:
