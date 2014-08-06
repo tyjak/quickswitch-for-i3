@@ -28,7 +28,7 @@ import re
 import string
 import subprocess
 
-workspace_number_re = re.compile('^(?P<number>\d+).*')
+workspace_number_re = re.compile('^(?P<number>\d+)(?P<name>.*)')
 default_dmenu_command = 'dmenu -b -i -l 20'
 
 try:
@@ -176,7 +176,7 @@ def next_used(number):
     '''Return the next used numbered workspace after the given number.'''
     workspaces = sorted([ws for ws in get_workspace_numbers(get_workspaces().keys())
                          if ws > number])
-    return workspaces[0] if workspaces else None
+    return workspace_name_from_number(workspaces[0]) if workspaces else None
 
 
 def degap():
@@ -191,7 +191,8 @@ def degap():
         ws = next_used(i)
         if ws is None:
             break
-        elif ws - i > 1:
+        ws_num = get_workspace_number(ws)
+        if ws_num - i > 1:
             rename_workspace(ws, i + 1)
         i += 1
 
@@ -243,8 +244,12 @@ def move_container_to_workspace(workspace):
     '''Moves the current container to the selected workspace'''
     return i3.msg(0, "move container to workspace {}".format(workspace))
 
-def rename_workspace(old, new):
+def rename_workspace(old, new_number):
     '''Rename a given workspace.'''
+    m = workspace_number_re.match(old)
+    if not m:
+        return
+    new = '%d%s' % (new_number, m.group('name'))
     return i3.msg(0, "rename workspace {} to {}".format(old, new))
 
 
