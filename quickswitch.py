@@ -29,6 +29,7 @@ import string
 import subprocess
 
 workspace_number_re = re.compile('^(?P<number>\d+).*')
+default_dmenu_command = 'dmenu -b -i -l 20'
 
 try:
     import i3
@@ -316,17 +317,12 @@ def main():
     mutgrp_2.add_argument('-u', '--urgent', default=False, action='store_true',
                         help='go to the first window with the urgency hint set')
 
-    parser.add_argument('-d', '--dmenu', default='dmenu -b -i -l 20',
+    parser.add_argument('-d', '--dmenu', default=default_dmenu_command,
                         help='dmenu command, executed within a shell')
     parser.add_argument('-i', '--insensitive', default=False, action="store_true",
                         help='make regexps case insensitive')
 
     args = parser.parse_args()
-
-    if not args.dmenu and not check_dmenu():
-        print("quickswitch requires dmenu.")
-        print("Please install it using your distribution's package manager.")
-        exit(os.EX_UNAVAILABLE)
 
     # jumping to the next empty workspaces doesn't require going through all
     # the stuff below, as we don't need to call dmenu etc, so we just call it
@@ -365,6 +361,11 @@ def main():
         except IndexError:
             exit(os.EX_SOFTWARE)
         exit(os.EX_OK)
+
+    if args.dmenu == default_dmenu_command and not check_dmenu():
+        print("quickswitch requires dmenu.")
+        print("Please install it using your distribution's package manager.")
+        exit(os.EX_UNAVAILABLE)
 
     lookup_func = get_windows
     if args.scratchpad:
