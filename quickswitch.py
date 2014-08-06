@@ -252,10 +252,22 @@ def cycle_numbered_workspaces(backwards=False):
     if not workspace_is_numbered(current):
         return None
     i = get_workspace_number(current)
-    target_ws = i + 1
+
+    all_ws_numbers = sorted(get_workspace_numbers(get_workspaces().keys()))
+
+    current_index = all_ws_numbers.index(i)
+    target_index = current_index + 1
     if backwards:
-        target_ws = i - 1
-    #TODO wrap at 0 and max
+        target_index = current_index - 1
+    
+    # Wrap around if we'd reach a non-used number
+    if target_index >= len(all_ws_numbers):
+        target_index = 0
+    elif target_index < 0:
+        target_index = len(all_ws_numbers) - 1
+
+    target_ws = all_ws_numbers[target_index]
+
     return str(workspace_name_from_number(target_ws))
 
 
