@@ -256,7 +256,7 @@ def main():
 
     args = parser.parse_args()
 
-    if not check_dmenu():
+    if not args.dmenu and not check_dmenu():
         print("quickswitch requires dmenu.")
         print("Please install it using your distribution's package manager.")
         exit(os.EX_UNAVAILABLE)
@@ -286,7 +286,6 @@ def main():
             exit(*goto_workspace(target_ws))
         else:
             exit(*i3.command("move container to workspace {}".format(target_ws)))
-
 
     lookup_func = get_windows
     if args.scratchpad:
