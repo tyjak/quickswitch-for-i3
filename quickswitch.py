@@ -33,7 +33,7 @@ try:
 except ImportError:
     print("quickswitch requires i3-py.")
     print("You can install it from the PyPI with ``pip install i3-py''.")
-    exit(1)
+    exit(os.EX_UNAVAILABLE)
 
 
 def check_dmenu():
@@ -259,7 +259,7 @@ def main():
     if not check_dmenu():
         print("quickswitch requires dmenu.")
         print("Please install it using your distribution's package manager.")
-        exit(1)
+        exit(os.EX_UNAVAILABLE)
 
     # jumping to the next empty workspaces doesn't require going through all
     # the stuff below, as we don't need to call dmenu etc, so we just call it
@@ -270,11 +270,11 @@ def main():
     # likewise for degapping...
     if args.degap:
         degap()
-        exit(0)
+        exit(os.EX_OK)
 
     # ...and regex search...
     if args.regex:
-        exit(0 if find_window_by_regex(args.regex, args.move) else 1)
+        exit(os.EX_OK if find_window_by_regex(args.regex, args.move) else os.EX_NOTFOUND)
 
     # ...as well as workspace cycling
     if args.next or args.previous:
@@ -308,7 +308,7 @@ def main():
     id_ = lookup.get(target)
     success = action_func(lookup.get(target)) if id_ is not None else False
 
-    exit(0 if success else 1)
+    exit(os.EX_OK if success else os.EX_NOTFOUND)
 
 
 if __name__ == '__main__':
