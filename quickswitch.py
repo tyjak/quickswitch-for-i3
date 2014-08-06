@@ -101,6 +101,22 @@ def find_window_by_regex(regex, move=False):
     return False
 
 
+def find_workspace_by_regex(regex, move=False):
+    '''Find the first workspace whose title matches regex and move the current container to it.'''
+    action = move_container_to_workspace
+
+    contains_uppercase = any([x.isupper() for x in regex])
+    if contains_uppercase:
+        cr = re.compile(regex)
+    else:
+        cr = re.compile(regex, re.I)
+    for title in get_workspaces().keys():
+        if cr.match(title):
+            action(title)
+            return True
+    return False
+
+
 def get_scratchpad():
     '''Get all windows on the scratchpad.'''
     scratchpad = i3.filter(name="__i3_scratch")[0]
@@ -276,26 +292,30 @@ def cycle_numbered_workspaces(backwards=False):
 
 def main():
     parser = argparse.ArgumentParser(description='''quickswitch for i3''')
-    parser.add_argument('-m', '--move', default=False, action="store_true",
-                        help="move window to the current workspace. If specified together with -w, moves the current container to the selected workspace")
 
-    mutgrp = parser.add_mutually_exclusive_group()
-    mutgrp.add_argument('-s', '--scratchpad', default=False, action="store_true",
+    mutgrp_1 = parser.add_mutually_exclusive_group()
+    mutgrp_1.add_argument('-m', '--move', default=False, action="store_true",
+                        help="move a chosen window to the current workspace. moves the current container to the selected workspace")
+    mutgrp_1.add_argument('-j', '--journey', default=False, action="store_true",
+                        help="moves the current container to a chosen workspace")
+
+    mutgrp_2 = parser.add_mutually_exclusive_group()
+    mutgrp_2.add_argument('-s', '--scratchpad', default=False, action="store_true",
                         help="list scratchpad windows instead of regular ones")
-    mutgrp.add_argument('-w', '--workspaces', default=False,
+    mutgrp_2.add_argument('-w', '--workspaces', default=False,
                         action="store_true",
                         help="list workspaces instead of windows")
-    mutgrp.add_argument('-e', '--empty', default=False, action='store_true',
+    mutgrp_2.add_argument('-e', '--empty', default=False, action='store_true',
                         help='go to the next empty, numbered workspace')
-    mutgrp.add_argument('-r', '--regex',
-                        help='find the first window matching the regex and focus/move it')
-    mutgrp.add_argument('-g', '--degap', action='store_true',
+    mutgrp_2.add_argument('-r', '--regex',
+                        help='find the first window matching the regex and focus/move it. Finds the first matching workspace when used with -j')
+    mutgrp_2.add_argument('-g', '--degap', action='store_true',
                         help='make numbered workspaces consecutive (remove gaps)')
-    mutgrp.add_argument('-n', '--next', default=False, action='store_true',
+    mutgrp_2.add_argument('-n', '--next', default=False, action='store_true',
                         help='go to the next (numbered) workspace')
-    mutgrp.add_argument('-p', '--previous', default=False, action='store_true',
+    mutgrp_2.add_argument('-p', '--previous', default=False, action='store_true',
                         help='go to the previous (numbered) workspace')
-    mutgrp.add_argument('-u', '--urgent', default=False, action='store_true',
+    mutgrp_2.add_argument('-u', '--urgent', default=False, action='store_true',
                         help='go to the first window with the urgency hint set')
 
     parser.add_argument('-d', '--dmenu', default='dmenu -b -i -l 20', help='dmenu command, executed within a shell')
@@ -320,7 +340,10 @@ def main():
 
     # ...and regex search...
     if args.regex:
-        exit(os.EX_OK if find_window_by_regex(args.regex, args.move) else os.EX_NOTFOUND)
+        if args.journey:
+            exit(os.EX_OK if find_workspace_by_regex(args.regex) else os.EX_NOTFOUND)
+        else:
+            exit(os.EX_OK if find_window_by_regex(args.regex, args.move) else os.EX_NOTFOUND)
 
     # ...as well as workspace cycling
     if args.next or args.previous:
@@ -351,8 +374,9 @@ def main():
     action_func = focus
     if args.move:
         action_func = move_window_here
-        if args.workspaces:
-            action_func = move_container_to_workspace
+    elif args.journey:
+        lookup_func = get_workspaces
+        action_func = move_container_to_workspace
     else:
         if args.scratchpad:
             action_func = get_scratchpad_window
