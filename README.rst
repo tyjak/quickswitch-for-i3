@@ -30,6 +30,9 @@ You can also search and jump (or move) via regular expression using the
 ``-r``/``--regex`` flag, without using dmenu. This could be useful for
 scripting, or if you are a regex wizard who feels limited by dmenu.
 
+If there are windows that have the urgency hint set, you can jump to the first
+one with the ``-u``/``--urgent`` flag.
+
 Workspaces
 ~~~~~~~~~~
 

@@ -251,6 +251,8 @@ def main():
                         help='go to the next (numbered) workspace')
     mutgrp.add_argument('-p', '--previous', default=False, action='store_true',
                         help='go to the previous (numbered) workspace')
+    mutgrp.add_argument('-u', '--urgent', default=False, action='store_true',
+                        help='go to the first window with the urgency hint set')
 
     parser.add_argument('-d', '--dmenu', default='dmenu -b -i -l 20', help='dmenu command, executed within a shell')
 
@@ -286,6 +288,15 @@ def main():
             exit(*goto_workspace(target_ws))
         else:
             exit(*i3.command("move container to workspace {}".format(target_ws)))
+
+    if args.urgent:
+        urgent_windows = i3.filter(urgent=True, nodes=[])
+        try:
+            window_id = urgent_windows[0]['window']
+            focus(window_id)
+        except IndexError:
+            exit(os.EX_SOFTWARE)
+        exit(os.EX_OK)
 
     lookup_func = get_windows
     if args.scratchpad:
