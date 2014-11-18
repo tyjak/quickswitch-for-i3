@@ -163,7 +163,7 @@ def get_workspaces():
     return create_lookup_table(workspaces)
 
 
-def next_empty():
+def first_empty():
     '''Return the lowest numbered workspace that is empty.'''
     workspaces = sorted(get_workspace_numbers(get_workspaces().keys()))
     for i in range(len(workspaces)):
@@ -171,6 +171,17 @@ def next_empty():
             return str(i + 1)
     return str(len(workspaces) + 1)
 
+def next_empty():
+    '''Return the lowest numbered workspace that is empty, and higher than the current workspace.'''
+    current_workspace = get_current_workspace()
+    current_num = get_workspace_number(current_workspace)
+    workspaces = get_workspace_numbers(get_workspaces().keys())
+    potential_target = current_num + 1
+    while True:
+        if potential_target not in workspaces:
+            return str(potential_target)
+        potential_target += 1
+    return str(potential_target)
 
 def next_used(number):
     '''Return the next used numbered workspace after the given number.'''
@@ -310,7 +321,9 @@ def main():
                         action="store_true",
                         help="list workspaces instead of windows")
     mutgrp_2.add_argument('-e', '--empty', default=False, action='store_true',
-                        help='go to the next empty, numbered workspace. Use with -j to send current window to a new empty workspace')
+                        help='go to the first empty, numbered workspace. Use with -j to send current window to a new empty workspace')
+    mutgrp_2.add_argument('-E', '--nextempty', default=False, action='store_true',
+                        help='go to the next empty, numbered workspace after the current one. Use with -j to send current window to a new empty workspace')
     mutgrp_2.add_argument('-r', '--regex',
                         help='find the first window matching the regex and focus/move it. Finds the first matching workspace when used with -j')
     mutgrp_2.add_argument('-g', '--degap', action='store_true',
@@ -333,6 +346,12 @@ def main():
     # the stuff below, as we don't need to call dmenu etc, so we just call it
     # here and exit if the appropriate flag was given.
     if args.empty:
+        if args.journey:
+            exit(*move_container_to_workspace(first_empty()))
+        else:
+            exit(*goto_workspace(first_empty()))
+
+    if args.nextempty:
         if args.journey:
             exit(*move_container_to_workspace(next_empty()))
         else:

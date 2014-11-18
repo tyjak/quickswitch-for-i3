@@ -54,6 +54,10 @@ what the ``-e/--empty`` flag does: it will jump you to the first empty,
 numbered workspace. If used with ``-j/--journey``, it will send the
 currently selected container/window to a new empty workspace.
 
+Those who have configured i3 to display workspaces on specific monitors
+can use ``-E/--nextempty`` to go to the first empty workspace with a
+number higher than the workspace they are currently on.
+
 If you use this excessively, then your numbered workspaces might
 fragment a lot. You can fix this easily with ``-g``/``--degap``, which
 "defragments" your workspaces, without affecting their order (eg, [1,
