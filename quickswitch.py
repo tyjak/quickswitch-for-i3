@@ -207,6 +207,21 @@ def degap():
         i += 1
 
 
+def get_lookup_title(window):
+    '''Get the lookup title for a window.
+    '''
+    parts = window.get('name').split(' - ')
+    wclass = window.get('window_properties', {}).get('class')
+    mark = window.get('mark')
+    if wclass:
+        parts = [part for part in parts if part.lower() != wclass.lower()]
+        parts.insert(0, wclass)
+    title = ' - '.join(parts)
+    if mark:
+        title += ' [{}]'.format(mark)
+    return title
+
+
 def create_lookup_table(windows):
     '''Create a lookup table from the given list of windows.
 
@@ -232,7 +247,7 @@ def create_lookup_table(windows):
                 ignore_window = True
                 break
         if ignore_window: continue
-        lookup[win_name] = win_id
+        lookup[get_lookup_title(window)] = win_id
     return lookup
 
 
