@@ -26,7 +26,6 @@ __version__ = '2.2'
 import argparse
 import os
 import re
-import string
 import subprocess
 
 workspace_number_re = re.compile('^(?P<number>\d+)(?P<name>.*)')
@@ -172,6 +171,7 @@ def first_empty():
             return str(i + 1)
     return str(len(workspaces) + 1)
 
+
 def next_empty():
     '''Return the lowest numbered workspace that is empty, and higher than the current workspace.'''
     current_workspace = get_current_workspace()
@@ -183,6 +183,7 @@ def next_empty():
             return str(potential_target)
         potential_target += 1
     return str(potential_target)
+
 
 def next_used(number):
     '''Return the next used numbered workspace after the given number.'''
@@ -252,9 +253,11 @@ def move_window_here(window):
     return i3.msg(0, "{} move workspace current".format(
         i3.container(id=window)))
 
+
 def move_container_to_workspace(workspace):
     '''Moves the current container to the selected workspace'''
     return i3.msg(0, "move container to workspace {}".format(workspace))
+
 
 def rename_workspace(old, new_number):
     '''Rename a given workspace.'''
@@ -294,7 +297,7 @@ def cycle_numbered_workspaces(backwards=False):
     target_index = current_index + 1
     if backwards:
         target_index = current_index - 1
-    
+
     # Wrap around if we'd reach a non-used number
     if target_index >= len(all_ws_numbers):
         target_index = 0
@@ -311,30 +314,30 @@ def main():
 
     mutgrp_1 = parser.add_mutually_exclusive_group()
     mutgrp_1.add_argument('-m', '--move', default=False, action="store_true",
-                        help="move a chosen window to the current workspace. moves the current container to the selected workspace")
+                          help="move a chosen window to the current workspace. moves the current container to the selected workspace")
     mutgrp_1.add_argument('-j', '--journey', default=False, action="store_true",
-                        help="moves the current container to a chosen workspace. Moves it to a new empty workspace with -e")
+                          help="moves the current container to a chosen workspace. Moves it to a new empty workspace with -e")
 
     mutgrp_2 = parser.add_mutually_exclusive_group()
     mutgrp_2.add_argument('-s', '--scratchpad', default=False, action="store_true",
-                        help="list scratchpad windows instead of regular ones")
+                          help="list scratchpad windows instead of regular ones")
     mutgrp_2.add_argument('-w', '--workspaces', default=False,
-                        action="store_true",
-                        help="list workspaces instead of windows")
+                          action="store_true",
+                          help="list workspaces instead of windows")
     mutgrp_2.add_argument('-e', '--empty', default=False, action='store_true',
-                        help='go to the first empty, numbered workspace. Use with -j to send current window to a new empty workspace')
+                          help='go to the first empty, numbered workspace. Use with -j to send current window to a new empty workspace')
     mutgrp_2.add_argument('-E', '--nextempty', default=False, action='store_true',
-                        help='go to the next empty, numbered workspace after the current one. Use with -j to send current window to a new empty workspace')
+                          help='go to the next empty, numbered workspace after the current one. Use with -j to send current window to a new empty workspace')
     mutgrp_2.add_argument('-r', '--regex',
-                        help='find the first window matching the regex and focus/move it. Finds the first matching workspace when used with -j')
+                          help='find the first window matching the regex and focus/move it. Finds the first matching workspace when used with -j')
     mutgrp_2.add_argument('-g', '--degap', action='store_true',
-                        help='make numbered workspaces consecutive (remove gaps), does not work with other arguments')
+                          help='make numbered workspaces consecutive (remove gaps), does not work with other arguments')
     mutgrp_2.add_argument('-n', '--next', default=False, action='store_true',
-                        help='go to the next (numbered) workspace')
+                          help='go to the next (numbered) workspace')
     mutgrp_2.add_argument('-p', '--previous', default=False, action='store_true',
-                        help='go to the previous (numbered) workspace')
+                          help='go to the previous (numbered) workspace')
     mutgrp_2.add_argument('-u', '--urgent', default=False, action='store_true',
-                        help='go to the first window with the urgency hint set')
+                          help='go to the first window with the urgency hint set')
 
     parser.add_argument('-d', '--dmenu', default=default_dmenu_command,
                         help='dmenu command, executed within a shell')
