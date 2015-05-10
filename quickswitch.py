@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 # quickswitch for i3 - quickly change to and locate windows in i3.
 #
-# Author: slowpoke <mail+python at slowpoke dot io>
+# Maintainer: OliverUv <OliverUv@Github, oliver.uvman+quickswitch@gmail.com>
+# Original author: slowpoke <mail+python at slowpoke dot io>
 # This program is Free Software under the terms of the
 #
 #            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
