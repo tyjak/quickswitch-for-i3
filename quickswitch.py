@@ -70,18 +70,18 @@ def get_windows():
 def parse_for_windows(tree_dict, window_list):
     is_leaf_node = False
 
-    if (tree_dict.has_key("nodes") and len(tree_dict["nodes"]) > 0):
+    if ('nodes' in tree_dict and len(tree_dict["nodes"]) > 0):
         is_leaf_node = True
         for node in tree_dict["nodes"]:
             parse_for_windows(node, window_list)
 
-    if (tree_dict.has_key('floating_nodes') and len(tree_dict['floating_nodes']) > 0 ):
+    if ('floating_nodes' in tree_dict and len(tree_dict['floating_nodes']) > 0):
         is_leaf_node = True
         for node in tree_dict["floating_nodes"]:
             parse_for_windows(node, window_list)
 
     if not is_leaf_node:
-        if (tree_dict["layout"] != "dockarea" and not tree_dict["window"] == None):
+        if (tree_dict["layout"] != "dockarea" and not tree_dict["window"] is None):
             window_list.append(tree_dict)
 
     return window_list
