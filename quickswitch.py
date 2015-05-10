@@ -423,9 +423,8 @@ def main():
         # and just use what dmenu handed us to begin with.
         id_ = target
 
-    success = action_func(id_) if id_ else False
-
-    exit(os.EX_OK if success else os.EX_NOTFOUND)
+    action_func(id_) if id_ else False
+    exit(os.EX_OK)
 
 
 if __name__ == '__main__':
