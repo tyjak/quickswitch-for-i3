@@ -237,7 +237,7 @@ def rename_nonunique(windows):
         if count > 1:
             for i in range(count):
                 index = window_names.index(name)
-                window_names[index] = "{} [{}]".format(name.decode('utf-8'), i + 1)
+                window_names[index] = "{} [{}]".format(name, i + 1)
     for i in range(len(windows)):
         windows[i]['name'] = window_names[i]
 
