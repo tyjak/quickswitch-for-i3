@@ -1,10 +1,10 @@
 # Maintainer: slowpoke <mail+aur at slowpoke dot io>
 pkgname='quickswitch-i3'
-pkgver=2.2
+pkgver=2.3
 pkgrel=1
 pkgdesc="quickly change to and locate windows in i3"
 arch=(any)
-url="https://github.com/proxypoke/quickswitch-for-i3"
+url="https://github.com/OliverUv/quickswitch-for-i3"
 license=('WTFPL')
 groups=()
 depends=('i3-wm' 'python' 'i3-py-git' 'dmenu')

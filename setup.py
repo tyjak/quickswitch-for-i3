@@ -1,6 +1,7 @@
 # quickswitch for i3 - quickly change to and locate windows in i3.
 #
-# Author: slowpoke <mail+python at slowpoke dot io>
+# Maintainer: OliverUv <OliverUv@Github, oliver.uvman+quickswitch@gmail.com>
+# Original author: slowpoke <mail+python at slowpoke dot io>
 #
 # This program is Free Software under the terms of the
 #
@@ -26,9 +27,9 @@ setup(name='quickswitch-i3',
       description='Quickly change to and locate windows in i3',
       long_description=open('README.rst').read(),
       version=quickswitch.__version__,
-      author='slowpoke',
-      author_email='mail+python at slowpoke dot io',
-      url='https://github.com/proxypoke/quickswitch-for-i3',
+      author='OliverUv',
+      author_email='oliver.uvman+quickswitch@gmail.com',
+      url='https://github.com/OliverUv/quickswitch-for-i3',
       scripts=['quickswitch.py'],
       requires=['i3_py'],
       classifiers=['Intended Audience :: End Users/Desktop',
