@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # quickswitch for i3 - quickly change to and locate windows in i3.
 #
