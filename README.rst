@@ -29,6 +29,10 @@ Conversely, you might want to send the current window or container on a
 A similiar feature is the ``-s/--scratchpad`` flag, which searches your
 scratchpad, and does a ``scratchpad show`` on the window you choose.
 
+To have your input to dmenu be interpreted as a shell command if it
+doesn't match any of the windows or workspaces, use the ``-l/--launch``
+argument.
+
 You can also search and jump (or move) via regular expression using the
 ``-r``/``--regex`` flag, without using dmenu. This could be useful for
 scripting, or if you are a regex wizard who feels limited by dmenu. This

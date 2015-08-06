@@ -337,6 +337,8 @@ def main():
                           help='go to the previous (numbered) workspace')
     mutgrp_2.add_argument('-u', '--urgent', default=False, action='store_true',
                           help='go to the first window with the urgency hint set')
+    mutgrp_2.add_argument('-l', '--launch', default=False, action='store_true',
+                          help='if input to dmenu doesn\'t match any given option, send the input to shell for interpretation')
 
     parser.add_argument('-d', '--dmenu', default=default_dmenu_command,
                         help='dmenu command, executed within a shell')
@@ -425,7 +427,11 @@ def main():
         # and just use what dmenu handed us to begin with.
         id_ = target
 
-    action_func(id_) if id_ else False
+    if id_:
+        action_func(id_)
+    elif target and args.launch:
+        subprocess.call(target, shell=True)
+
     exit(os.EX_OK)
 
 
