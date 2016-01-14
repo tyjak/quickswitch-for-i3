@@ -19,14 +19,12 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-from distutils.core import setup
-
-import quickswitch
+from setuptools import setup
 
 setup(name='quickswitch-i3',
       description='Quickly change to and locate windows in i3',
       long_description=open('README.rst').read(),
-      version=quickswitch.__version__,
+      version='2.3',
       author='OliverUv',
       author_email='oliver.uvman+quickswitch@gmail.com',
       url='https://github.com/OliverUv/quickswitch-for-i3',
