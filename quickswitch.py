@@ -29,6 +29,7 @@ import subprocess
 
 workspace_number_re = re.compile('^(?P<number>\d+)(?P<name>.*)')
 default_dmenu_command = 'dmenu -b -i -l 20'
+ignore_class_list = []
 
 try:
     import i3
@@ -219,12 +220,21 @@ def create_lookup_table(windows):
     for window in windows:
         name = window.get('name')
         id_ = window.get('window')
+        class_ = ''
+        if window.get('window_properties') and window['window_properties'].get('class'):
+            class_ = window['window_properties']['class']
         if id_ is None:
             # this is not an X window, ignore it.
             continue
         if name.startswith("i3bar for output"):
             # this is an i3bar, ignore it.
             continue
+        must_go = False
+        for cn in ignore_class_list:
+            if class_ == cn:
+                must_go = True
+                break
+        if must_go: continue
         lookup[name] = id_
     return lookup
 
@@ -307,6 +317,10 @@ def cycle_numbered_workspaces(backwards=False):
 
     return str(workspace_name_from_number(target_ws))
 
+def set_ignore_class_list(str_list):
+    global ignore_class_list
+    ignore_class_list = str_list.split(',')
+
 
 def main():
     parser = argparse.ArgumentParser(description='''quickswitch for i3''')
@@ -340,6 +354,8 @@ def main():
     mutgrp_2.add_argument('-l', '--launch', default=False, action='store_true',
                           help='if input to dmenu doesn\'t match any given option, send the input to shell for interpretation')
 
+    parser.add_argument('-C', '--ignore-classes', default='',
+                        help='comma separated list of window classes to ignore')
     parser.add_argument('-d', '--dmenu', default=default_dmenu_command,
                         help='dmenu command, executed within a shell')
     parser.add_argument('-i', '--insensitive', default=False, action="store_true",
@@ -366,6 +382,10 @@ def main():
     if args.degap:
         degap()
         exit(os.EX_OK)
+
+    # initialize ignore_class_list
+    if args.ignore_classes:
+        set_ignore_class_list(args.ignore_classes)
 
     # ...and regex search...
     if args.regex:
