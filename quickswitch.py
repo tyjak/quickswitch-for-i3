@@ -29,7 +29,7 @@ import subprocess
 
 workspace_number_re = re.compile('^(?P<number>\d+)(?P<name>.*)')
 default_dmenu_command = 'dmenu -b -i -l 20'
-ignore_class_list = []
+window_class_ignore_list = []
 
 try:
     import i3
@@ -229,12 +229,12 @@ def create_lookup_table(windows):
         if win_name.startswith("i3bar for output"):
             # this is an i3bar, ignore it.
             continue
-        must_go = False
+        ignore_window = False
         for cn in window_class_ignore_list:
             if win_class == cn:
-                must_go = True
+                ignore_window = True
                 break
-        if must_go: continue
+        if ignore_window: continue
         lookup[win_name] = win_id
     return lookup
 
@@ -318,8 +318,8 @@ def cycle_numbered_workspaces(backwards=False):
     return str(workspace_name_from_number(target_ws))
 
 def set_ignore_class_list(str_list):
-    global ignore_class_list
-    ignore_class_list = str_list.split(',')
+    global window_class_ignore_list
+    window_class_ignore_list = str_list.split(',')
 
 
 def main():
@@ -383,7 +383,7 @@ def main():
         degap()
         exit(os.EX_OK)
 
-    # initialize ignore_class_list
+    # initialize window_class_ignore_list
     if args.ignore_classes:
         set_ignore_class_list(args.ignore_classes)
 
