@@ -34,14 +34,14 @@ doesn't match any of the windows or workspaces, use the ``-l/--launch``
 argument.
 
 You can also search and jump (or move) via regular expression using the
-``-r``/``--regex`` flag, without using dmenu. This could be useful for
+``-r/--regex`` flag, without using dmenu. This could be useful for
 scripting, or if you are a regex wizard who feels limited by dmenu. This
 works in conjunction with the ``-m`` and ``-j`` commands.
 
 To make your regex case insensitive, use ``-i/--insensitive``.
 
 If there are windows that have the urgency hint set, you can jump to the
-first one with the ``-u``/``--urgent`` flag. You can also use something
+first one with the ``-u/--urgent`` flag. You can also use something
 like this in i3's own config: ``$mod+a [urgent="latest"] focus``.
 
 Workspaces
@@ -63,7 +63,7 @@ can use ``-E/--nextempty`` to go to the first empty workspace with a
 number higher than the workspace they are currently on.
 
 If you use this excessively, then your numbered workspaces might
-fragment a lot. You can fix this easily with ``-g``/``--degap``, which
+fragment a lot. You can fix this easily with ``-g/--degap``, which
 "defragments" your workspaces, without affecting their order (eg, [1,
 4, 7] becomes [1, 2, 3] by renaming 4 to 2 and 7 to 3). This argument
 cannot be combined with other arguments.
