@@ -94,9 +94,9 @@ def find_window_by_regex(regex, insensitive=False, move=False):
         cr = re.compile(regex, re.I)
     else:
         cr = re.compile(regex)
-    for title, id in get_windows().items():
-        if cr.match(title):
-            action(id)
+    for win_name, win_id in get_windows().items():
+        if cr.match(win_name):
+            action(win_id)
             return True
     return False
 
@@ -218,24 +218,24 @@ def create_lookup_table(windows):
     rename_nonunique(windows)
     lookup = {}
     for window in windows:
-        name = window.get('name')
-        id_ = window.get('window')
-        class_ = ''
+        win_name = window.get('name')
+        win_id = window.get('window')
+        win_class = ''
         if window.get('window_properties') and window['window_properties'].get('class'):
-            class_ = window['window_properties']['class']
-        if id_ is None:
+            win_class = window['window_properties']['class']
+        if win_id is None:
             # this is not an X window, ignore it.
             continue
-        if name.startswith("i3bar for output"):
+        if win_name.startswith("i3bar for output"):
             # this is an i3bar, ignore it.
             continue
         must_go = False
-        for cn in ignore_class_list:
-            if class_ == cn:
+        for cn in window_class_ignore_list:
+            if win_class == cn:
                 must_go = True
                 break
         if must_go: continue
-        lookup[name] = id_
+        lookup[win_name] = win_id
     return lookup
 
 
@@ -408,8 +408,8 @@ def main():
     if args.urgent:
         urgent_windows = i3.filter(urgent=True, nodes=[])
         try:
-            window_id = urgent_windows[0]['window']
-            focus(window_id)
+            win_id = urgent_windows[0]['window']
+            focus(win_id)
         except IndexError:
             exit(os.EX_SOFTWARE)
         exit(os.EX_OK)
@@ -439,16 +439,16 @@ def main():
 
     lookup = lookup_func()
     target = dmenu(lookup.keys(), args.dmenu)
-    id_ = lookup.get(target)
+    ws_id = lookup.get(target)
 
-    if not id_ and args.workspaces:
+    if not ws_id and args.workspaces:
         # For workspace actions, we want to enable users to create new
         # workspaces. Easily done by discarding the lookup result
         # and just use what dmenu handed us to begin with.
-        id_ = target
+        ws_id = target
 
-    if id_:
-        action_func(id_)
+    if ws_id:
+        action_func(ws_id)
     elif target and args.launch:
         subprocess.call(target, shell=True)
 
