@@ -222,8 +222,8 @@ def create_lookup_table(windows):
         if id_ is None:
             # this is not an X window, ignore it.
             continue
-        if name.startswith("i3bar for output"):
-            # this is an i3bar, ignore it.
+        if not name or name.startswith("i3bar for output"):
+            # this is either a broken window or an i3bar, ignore it.
             continue
         lookup[name] = id_
     return lookup
