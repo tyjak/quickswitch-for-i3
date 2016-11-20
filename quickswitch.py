@@ -22,11 +22,12 @@
 
 __version__ = '2.3'
 
+import os
+import re
+import sys
 import argparse
 import subprocess
 import shutil
-import os
-import re
 
 workspace_number_re = re.compile('^(?P<number>\d+)(?P<name>.*)')
 default_dmenu_command = 'dmenu -b -i -l 20'
@@ -37,7 +38,7 @@ try:
 except ImportError:
     print("quickswitch requires i3-py.")
     print("You can install it from the PyPI with ``pip install i3-py''.")
-    exit(os.EX_UNAVAILABLE)
+    sys.exit(os.EX_UNAVAILABLE)
 
 
 def check_dmenu():
@@ -364,20 +365,20 @@ def main():
     # here and exit if the appropriate flag was given.
     if args.empty:
         if args.journey:
-            exit(*move_container_to_workspace(first_empty()))
+            sys.exit(*move_container_to_workspace(first_empty()))
         else:
-            exit(*goto_workspace(first_empty()))
+            sys.exit(*goto_workspace(first_empty()))
 
     if args.nextempty:
         if args.journey:
-            exit(*move_container_to_workspace(next_empty()))
+            sys.exit(*move_container_to_workspace(next_empty()))
         else:
-            exit(*goto_workspace(next_empty()))
+            sys.exit(*goto_workspace(next_empty()))
 
     # likewise for degapping...
     if args.degap:
         degap()
-        exit(os.EX_OK)
+        sys.exit(os.EX_OK)
 
     # initialize window_class_ignore_list
     if args.ignore_classes:
@@ -386,20 +387,20 @@ def main():
     # ...and regex search...
     if args.regex:
         if args.journey:
-            exit(os.EX_OK if find_workspace_by_regex(args.regex, args.insensitive) else os.EX_NOTFOUND)
+            sys.exit(os.EX_OK if find_workspace_by_regex(args.regex, args.insensitive) else os.EX_NOTFOUND)
         else:
-            exit(os.EX_OK if find_window_by_regex(args.regex, args.insensitive, args.move) else os.EX_NOTFOUND)
+            sys.exit(os.EX_OK if find_window_by_regex(args.regex, args.insensitive, args.move) else os.EX_NOTFOUND)
 
     # ...as well as workspace cycling
     if args.next or args.previous:
         if not workspace_is_numbered(get_current_workspace()):
             print("--next and --previous only work on numbered workspaces")
-            exit(1)
+            sys.exit(1)
         target_ws = cycle_numbered_workspaces(args.previous)
         if not args.move:
-            exit(*goto_workspace(target_ws))
+            sys.exit(*goto_workspace(target_ws))
         else:
-            exit(*i3.command("move container to workspace {}".format(target_ws)))
+            sys.exit(*i3.command("move container to workspace {}".format(target_ws)))
 
     if args.urgent:
         urgent_windows = i3.filter(urgent=True, nodes=[])
@@ -407,13 +408,13 @@ def main():
             win_id = urgent_windows[0]['window']
             focus(win_id)
         except IndexError:
-            exit(os.EX_SOFTWARE)
-        exit(os.EX_OK)
+            sys.exit(os.EX_SOFTWARE)
+        sys.exit(os.EX_OK)
 
     if args.dmenu == default_dmenu_command and not check_dmenu():
         print("quickswitch requires dmenu.")
         print("Please install it using your distribution's package manager.")
-        exit(os.EX_UNAVAILABLE)
+        sys.exit(os.EX_UNAVAILABLE)
 
     lookup_func = get_windows
     if args.scratchpad:
@@ -448,7 +449,7 @@ def main():
     elif target and args.launch:
         subprocess.call(target, shell=True)
 
-    exit(os.EX_OK)
+    sys.exit(os.EX_OK)
 
 
 if __name__ == '__main__':
