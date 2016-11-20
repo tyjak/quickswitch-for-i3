@@ -31,6 +31,5 @@ setup(name='quickswitch-i3',
       scripts=['quickswitch.py'],
       requires=['i3_py'],
       classifiers=['Intended Audience :: End Users/Desktop',
-                   'Programming Language :: Python :: 2',
                    'Programming Language :: Python :: 3'],
       license='DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE')
