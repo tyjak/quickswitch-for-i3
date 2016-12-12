@@ -464,8 +464,10 @@ def main():
             dmenu_prompt = 'focus {}'.format(unit)
 
     lookup = lookup_func()
-    target = dmenu(lookup.keys(), args.dmenu + (' -p "{}"'.format(dmenu_prompt)
-                                                if args.prompt else ''))
+    dmenu_prompt_args = args.dmenu
+    if args.prompt:
+        dmenu_prompt_args += ' -p "{}"'.format(dmenu_prompt)
+    target = dmenu(lookup.keys(), dmenu_prompt_args)
     ws_id = lookup.get(target)
 
     if not ws_id and args.workspaces:
