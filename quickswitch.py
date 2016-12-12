@@ -454,7 +454,7 @@ def main():
     elif args.journey:
         lookup_func = get_workspaces
         action_func = move_container_to_workspace
-        dmenu_prompt = 'Move container to workspace'
+        dmenu_prompt = 'move container to workspace'
     else:
         if args.scratchpad:
             action_func = get_scratchpad_window
