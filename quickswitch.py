@@ -376,6 +376,8 @@ def main():
                         help='dmenu command, executed within a shell')
     parser.add_argument('-i', '--insensitive', default=False, action="store_true",
                         help='make regexps case insensitive')
+    parser.add_argument('-o', '--prompt', default=False, action="store_true",
+                        help='show a prompt in dmenu describing the action to perform')
 
     args = parser.parse_args()
 
@@ -436,25 +438,34 @@ def main():
         sys.exit(os.EX_UNAVAILABLE)
 
     lookup_func = get_windows
+    unit = 'window'
     if args.scratchpad:
         lookup_func = get_scratchpad
+        unit = 'scratchpad'
     if args.workspaces:
         lookup_func = get_workspaces
+        unit = 'workspace'
 
     action_func = focus
+    dmenu_prompt = 'focus {}'.format(unit)
     if args.move:
         action_func = move_window_here
+        dmenu_prompt = 'move container to this {}'.format(unit)
     elif args.journey:
         lookup_func = get_workspaces
         action_func = move_container_to_workspace
+        dmenu_prompt = 'Move container to workspace'
     else:
         if args.scratchpad:
             action_func = get_scratchpad_window
+            dmenu_prompt = 'focus {}'.format(unit)
         if args.workspaces:
             action_func = goto_workspace
+            dmenu_prompt = 'focus {}'.format(unit)
 
     lookup = lookup_func()
-    target = dmenu(lookup.keys(), args.dmenu)
+    target = dmenu(lookup.keys(), args.dmenu + (' -p "{}"'.format(dmenu_prompt)
+                                                if args.prompt else ''))
     ws_id = lookup.get(target)
 
     if not ws_id and args.workspaces:
