@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # quickswitch for i3 - quickly change to and locate windows in i3.
 #
@@ -22,30 +22,28 @@
 
 __version__ = '2.3'
 
-import argparse
 import os
 import re
+import sys
+import argparse
 import subprocess
+import shutil
 
 workspace_number_re = re.compile('^(?P<number>\d+)(?P<name>.*)')
 default_dmenu_command = 'dmenu -b -i -l 20'
+window_class_ignore_list = []
 
 try:
     import i3
 except ImportError:
     print("quickswitch requires i3-py.")
     print("You can install it from the PyPI with ``pip install i3-py''.")
-    exit(os.EX_UNAVAILABLE)
+    sys.exit(os.EX_UNAVAILABLE)
 
 
 def check_dmenu():
     '''Check if dmenu is available.'''
-    with open(os.devnull, 'w') as f:
-        retcode = subprocess.call(["which", "dmenu"],
-                                  stdout=f,
-                                  stderr=f)
-        return retcode == 0
-
+    return bool(shutil.which('dmenu'))
 
 def dmenu(options, dmenu):
     '''Call dmenu with a list of options.'''
@@ -93,9 +91,9 @@ def find_window_by_regex(regex, insensitive=False, move=False):
         cr = re.compile(regex, re.I)
     else:
         cr = re.compile(regex)
-    for title, id in get_windows().items():
-        if cr.match(title):
-            action(id)
+    for win_name, win_id in get_windows().items():
+        if cr.match(win_name):
+            action(win_id)
             return True
     return False
 
@@ -209,6 +207,21 @@ def degap():
         i += 1
 
 
+def get_lookup_title(window):
+    '''Get the lookup title for a window.
+    '''
+    parts = window.get('name').split(' - ')
+    wclass = window.get('window_properties', {}).get('class')
+    mark = window.get('mark')
+    if wclass:
+        parts = [part for part in parts if part.lower() != wclass.lower()]
+        parts.insert(0, wclass)
+    title = ' - '.join(parts)
+    if mark:
+        title += ' [{}]'.format(mark)
+    return title
+
+
 def create_lookup_table(windows):
     '''Create a lookup table from the given list of windows.
 
@@ -217,15 +230,28 @@ def create_lookup_table(windows):
     rename_nonunique(windows)
     lookup = {}
     for window in windows:
-        name = window.get('name')
-        id_ = window.get('window')
-        if id_ is None:
+        win_name = window.get('name')
+        win_id = window.get('window')
+        win_class = ''
+        if window.get('window_properties') and window['window_properties'].get('class'):
+            win_class = window['window_properties']['class']
+        if win_id is None:
             # this is not an X window, ignore it.
             continue
-        if not name or name.startswith("i3bar for output"):
-            # this is either a broken window or an i3bar, ignore it.
+        if win_name.startswith("i3bar for output"):
+            # this is an i3bar, ignore it.
             continue
-        lookup[name] = id_
+        ignore_window = False
+        for cn in window_class_ignore_list:
+            if win_class == cn:
+                ignore_window = True
+                break
+        if ignore_window: continue
+        win_name = get_lookup_title(window)
+        if win_name in lookup:
+            # duplicate name of previous window -- add "(win_id)" as suffix in attempt to make unique
+            win_name = "{} ({})".format(win_name, str(win_id))
+        lookup[win_name] = win_id
     return lookup
 
 
@@ -307,6 +333,10 @@ def cycle_numbered_workspaces(backwards=False):
 
     return str(workspace_name_from_number(target_ws))
 
+def set_ignore_class_list(str_list):
+    global window_class_ignore_list
+    window_class_ignore_list = str_list.split(',')
+
 
 def main():
     parser = argparse.ArgumentParser(description='''quickswitch for i3''')
@@ -340,6 +370,8 @@ def main():
     mutgrp_2.add_argument('-l', '--launch', default=False, action='store_true',
                           help='if input to dmenu doesn\'t match any given option, send the input to shell for interpretation')
 
+    parser.add_argument('-C', '--ignore-classes', default='',
+                        help='comma separated list of window classes to ignore')
     parser.add_argument('-d', '--dmenu', default=default_dmenu_command,
                         help='dmenu command, executed within a shell')
     parser.add_argument('-i', '--insensitive', default=False, action="store_true",
@@ -352,52 +384,56 @@ def main():
     # here and exit if the appropriate flag was given.
     if args.empty:
         if args.journey:
-            exit(*move_container_to_workspace(first_empty()))
+            sys.exit(*move_container_to_workspace(first_empty()))
         else:
-            exit(*goto_workspace(first_empty()))
+            sys.exit(*goto_workspace(first_empty()))
 
     if args.nextempty:
         if args.journey:
-            exit(*move_container_to_workspace(next_empty()))
+            sys.exit(*move_container_to_workspace(next_empty()))
         else:
-            exit(*goto_workspace(next_empty()))
+            sys.exit(*goto_workspace(next_empty()))
 
     # likewise for degapping...
     if args.degap:
         degap()
-        exit(os.EX_OK)
+        sys.exit(os.EX_OK)
+
+    # initialize window_class_ignore_list
+    if args.ignore_classes:
+        set_ignore_class_list(args.ignore_classes)
 
     # ...and regex search...
     if args.regex:
         if args.journey:
-            exit(os.EX_OK if find_workspace_by_regex(args.regex, args.insensitive) else os.EX_NOTFOUND)
+            sys.exit(os.EX_OK if find_workspace_by_regex(args.regex, args.insensitive) else os.EX_NOTFOUND)
         else:
-            exit(os.EX_OK if find_window_by_regex(args.regex, args.insensitive, args.move) else os.EX_NOTFOUND)
+            sys.exit(os.EX_OK if find_window_by_regex(args.regex, args.insensitive, args.move) else os.EX_NOTFOUND)
 
     # ...as well as workspace cycling
     if args.next or args.previous:
         if not workspace_is_numbered(get_current_workspace()):
             print("--next and --previous only work on numbered workspaces")
-            exit(1)
+            sys.exit(1)
         target_ws = cycle_numbered_workspaces(args.previous)
         if not args.move:
-            exit(*goto_workspace(target_ws))
+            sys.exit(*goto_workspace(target_ws))
         else:
-            exit(*i3.command("move container to workspace {}".format(target_ws)))
+            sys.exit(*i3.command("move container to workspace {}".format(target_ws)))
 
     if args.urgent:
         urgent_windows = i3.filter(urgent=True, nodes=[])
         try:
-            window_id = urgent_windows[0]['window']
-            focus(window_id)
+            win_id = urgent_windows[0]['window']
+            focus(win_id)
         except IndexError:
-            exit(os.EX_SOFTWARE)
-        exit(os.EX_OK)
+            sys.exit(os.EX_SOFTWARE)
+        sys.exit(os.EX_OK)
 
     if args.dmenu == default_dmenu_command and not check_dmenu():
         print("quickswitch requires dmenu.")
         print("Please install it using your distribution's package manager.")
-        exit(os.EX_UNAVAILABLE)
+        sys.exit(os.EX_UNAVAILABLE)
 
     lookup_func = get_windows
     if args.scratchpad:
@@ -419,20 +455,20 @@ def main():
 
     lookup = lookup_func()
     target = dmenu(lookup.keys(), args.dmenu)
-    id_ = lookup.get(target)
+    ws_id = lookup.get(target)
 
-    if not id_ and args.workspaces:
+    if not ws_id and args.workspaces:
         # For workspace actions, we want to enable users to create new
         # workspaces. Easily done by discarding the lookup result
         # and just use what dmenu handed us to begin with.
-        id_ = target
+        ws_id = target
 
-    if id_:
-        action_func(id_)
+    if ws_id:
+        action_func(ws_id)
     elif target and args.launch:
         subprocess.call(target, shell=True)
 
-    exit(os.EX_OK)
+    sys.exit(os.EX_OK)
 
 
 if __name__ == '__main__':

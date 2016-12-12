@@ -29,20 +29,26 @@ Conversely, you might want to send the current window or container on a
 A similiar feature is the ``-s/--scratchpad`` flag, which searches your
 scratchpad, and does a ``scratchpad show`` on the window you choose.
 
-To have your input to dmenu be interpreted as a shell command if it
-doesn't match any of the windows or workspaces, use the ``-l/--launch``
-argument.
-
 You can also search and jump (or move) via regular expression using the
-``-r``/``--regex`` flag, without using dmenu. This could be useful for
+``-r/--regex`` flag, without using dmenu. This could be useful for
 scripting, or if you are a regex wizard who feels limited by dmenu. This
 works in conjunction with the ``-m`` and ``-j`` commands.
 
 To make your regex case insensitive, use ``-i/--insensitive``.
 
-If there are windows that have the urgency hint set, you can jump to the
-first one with the ``-u``/``--urgent`` flag. You can also use something
-like this in i3's own config: ``$mod+a [urgent="latest"] focus``.
+In case of emergency and windows having the urgency hint set, you can
+jump to the first one with the ``-u/--urgent`` flag. You can also
+use something like this in i3's own config: ``$mod+a [urgent="latest"]
+focus``.
+
+If the windows list contains not usefull items, such as desktop panels
+in a mixed environment (i3+mate, i3+KDE…), you can ignore them with
+``-C/--ignore-classes`` and a comma separated list of window classes to
+ignore (found them with ``xprop`` for example).
+
+Finally, to have your input to dmenu be interpreted as a shell command
+if it doesn't match any of the windows or workspaces, use the
+``-l/--launch`` argument.
 
 Workspaces
 ~~~~~~~~~~
@@ -63,7 +69,7 @@ can use ``-E/--nextempty`` to go to the first empty workspace with a
 number higher than the workspace they are currently on.
 
 If you use this excessively, then your numbered workspaces might
-fragment a lot. You can fix this easily with ``-g``/``--degap``, which
+fragment a lot. You can fix this easily with ``-g/--degap``, which
 "defragments" your workspaces, without affecting their order (eg, [1,
 4, 7] becomes [1, 2, 3] by renaming 4 to 2 and 7 to 3). This argument
 cannot be combined with other arguments.
