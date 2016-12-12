@@ -36,15 +36,15 @@ works in conjunction with the ``-m`` and ``-j`` commands.
 
 To make your regex case insensitive, use ``-i/--insensitive``.
 
-In case of emergency and windows having the urgency hint set, you can
-jump to the first one with the ``-u/--urgent`` flag. You can also
-use something like this in i3's own config: ``$mod+a [urgent="latest"]
-focus``.
+If any windows have the urgency hint set, you can jump to the first one
+with the ``-u/--urgent`` flag. You can also use something like this in
+i3's own config: ``$mod+a [urgent="latest"] focus``.
 
-If the windows list contains not usefull items, such as desktop panels
-in a mixed environment (i3+mate, i3+KDE…), you can ignore them with
-``-C/--ignore-classes`` and a comma separated list of window classes to
-ignore (found them with ``xprop`` for example).
+If the window list contains useless, such as desktop panels in a
+mixed environment (i3+mate, i3+KDE…), you can ignore them with
+``-C/--ignore-classes`` followed by a comma separated list of window
+classes to ignore. To find out which window class a window has, you can
+use ``xprop``.
 
 Finally, to have your input to dmenu be interpreted as a shell command
 if it doesn't match any of the windows or workspaces, use the
@@ -117,8 +117,8 @@ Additionally, if you are an Arch user, you can install it from the AUR.
 The package is called ``quickswitch-i3``. The PKGBUILD is also included
 here.
 
-**NOTE**: I do not maintain the AUR package anymore, since I do not have
-access to any Arch box. See comment on the AUR page.
+**NOTE**: The AUR package is no longer maintained. If you wish to
+maintain it, contact @OliverUv.
 
 Contributions
 -------------
