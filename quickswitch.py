@@ -20,7 +20,7 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-__version__ = '2.4'
+__version__ = '2.5'
 
 import os
 import re
