@@ -30,6 +30,7 @@ setup(name='quickswitch-i3',
       url='https://github.com/OliverUv/quickswitch-for-i3',
       scripts=['quickswitch.py'],
       requires=['i3_py'],
+      entry_points={'console_scripts': ['quickswitch=quickswitch:main']},
       classifiers=['Intended Audience :: End Users/Desktop',
                    'Programming Language :: Python :: 3'],
       license='DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE')
