@@ -158,7 +158,8 @@ def workspace_name_from_number(ws_number):
 
 
 def get_workspaces():
-    """Returns all workspace names.
+    """
+    Returns all workspace names.
 
     NOTE: This returns a map of name → name, which is rather redundant, but
     makes it possible to use the result without changing much in main().
@@ -205,7 +206,8 @@ def next_used(number):
 
 
 def degap():
-    """Remove "gaps" in the numbered workspaces.
+    """
+    Remove ``gaps'' in the numbered workspaces.
 
     This searches for non-consecutive numbers in the workspace list, and moves
     used workspaces as far to the left as possible.
@@ -223,8 +225,7 @@ def degap():
 
 
 def get_lookup_title(window):
-    """Get the lookup title for a window.
-    """
+    """Get the lookup title for a window."""
     parts = window.get("name").split(" - ")
     wclass = window.get("window_properties", {}).get("class")
     mark = window.get("mark")
@@ -238,7 +239,8 @@ def get_lookup_title(window):
 
 
 def create_lookup_table(windows):
-    """Create a lookup table from the given list of windows.
+    """
+    Create a lookup table from the given list of windows.
 
     The returned dict is in the format window title → X window id.
     """
@@ -341,7 +343,7 @@ def cycle_numbered_workspaces(backwards=False):
     if backwards:
         target_index = current_index - 1
 
-    # Wrap around if we"d reach a non-used number
+    # Wrap around if we'd reach a non-used number
     if target_index >= len(all_ws_numbers):
         target_index = 0
     elif target_index < 0:
@@ -368,7 +370,7 @@ def main():
     mutgrp_1.add_argument("-j", "--journey", default=False,
                           action="store_true",
                           help="moves the current container to a "
-                          "chosen workspace. Moves it to a new empty "
+                          "chosen workspace or moves it to a new empty "
                           "workspace with -e")
 
     mutgrp_2 = parser.add_mutually_exclusive_group()
@@ -426,8 +428,8 @@ def main():
 
     args = parser.parse_args()
 
-    # jumping to the next empty workspaces doesn"t require going through all
-    # the stuff below, as we don"t need to call dmenu etc, so we just call it
+    # jumping to the next empty workspaces doesn't require going through all
+    # the stuff below, as we don't need to call dmenu etc, so we just call it
     # here and exit if the appropriate flag was given.
     if args.empty:
         if args.journey:
