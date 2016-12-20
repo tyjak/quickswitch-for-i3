@@ -35,7 +35,8 @@ except ImportError:
     print("You can install it from the PyPI with ``pip install i3-py''.")
     sys.exit(os.EX_UNAVAILABLE)
 
-__version__ = "2.5"
+# Must use semver 2.0.0
+__version__ = "2.6.0"
 
 workspace_number_re = re.compile("^(?P<number>\d+)(?P<name>.*)")
 default_dmenu_command = "dmenu -b -i -l 20"

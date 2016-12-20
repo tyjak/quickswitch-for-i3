@@ -19,12 +19,14 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
+# version must use semver 2.0.0
+
 from setuptools import setup
 
 setup(name="quickswitch-i3",
       description="Quickly change to and locate windows in i3",
       long_description=open("README.rst").read(),
-      version="2.5",
+      version="2.6.0",
       author="OliverUv",
       author_email="oliver.uvman+quickswitch@gmail.com",
       url="https://github.com/OliverUv/quickswitch-for-i3",
