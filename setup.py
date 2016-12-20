@@ -21,16 +21,16 @@
 
 from setuptools import setup
 
-setup(name='quickswitch-i3',
-      description='Quickly change to and locate windows in i3',
-      long_description=open('README.rst').read(),
-      version='2.5',
-      author='OliverUv',
-      author_email='oliver.uvman+quickswitch@gmail.com',
-      url='https://github.com/OliverUv/quickswitch-for-i3',
-      scripts=['quickswitch.py'],
-      requires=['i3_py'],
-      entry_points={'console_scripts': ['quickswitch=quickswitch:main']},
-      classifiers=['Intended Audience :: End Users/Desktop',
-                   'Programming Language :: Python :: 3'],
-      license='DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE')
+setup(name="quickswitch-i3",
+      description="Quickly change to and locate windows in i3",
+      long_description=open("README.rst").read(),
+      version="2.5",
+      author="OliverUv",
+      author_email="oliver.uvman+quickswitch@gmail.com",
+      url="https://github.com/OliverUv/quickswitch-for-i3",
+      scripts=["quickswitch.py"],
+      requires=["i3_py"],
+      entry_points={"console_scripts": ["quickswitch=quickswitch:main"]},
+      classifiers=["Intended Audience :: End Users/Desktop",
+                   "Programming Language :: Python :: 3"],
+      license="DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE")
