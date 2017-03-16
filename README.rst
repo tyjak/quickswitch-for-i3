@@ -23,8 +23,13 @@ Here's how it looks in action:
 
 However, sometimes you may want to grab a window and move it to your
 current workspace. This can be done with the ``-m/--move`` flag.
-Conversely, you might want to send the current window or container on a
-``-j/--journey`` to another workspace.
+
+Conversely, you might want to send the current window or container on
+a ``-j/--journey`` to another workspace. If your current workspace
+becomes empty without that container, you'll be glad you added the
+``-F/--followifempty`` switch, which will change your current workspace
+to the one where your container went. If you use ``-f/--follow``, you'll
+be following along whether your workspace becomes empty or not.
 
 A similiar feature is the ``-s/--scratchpad`` flag, which searches your
 scratchpad, and does a ``scratchpad show`` on the window you choose.
@@ -102,23 +107,28 @@ want to change anything, this allows you to go wild.
 Dependencies
 ------------
 quickswitch-i3 requires dmenu (which you likely already have installed),
-and i3-py, which you can install with ``pip install i3-py``.
+and i3-py, which you can install with ``pip install i3-py`` if you're
+using python 2.7, or ``pip3 install i3-py`` if you're using pyton 3.
 
 quickswitch-i3 was tested in Python 2.7.3 and 3.2.3. It will not work in
 version prior to 2.7 due to the usage of ``argparse``.
 
 Installation
 ------------
+If you are an Arch user, you can install it from the AUR. The package is
+called ``quickswitch-i3``. The PKGBUILD is also included here.
+
+Otherwise you can simply clone the repository and use the quickswitch.py
+file from there. The ``i3-py`` package is a required dependency, as
+noted above
+
+**NOTE**: The PIP package is no longer maintained. If you wish to
+maintain it, contact @OliverUv. The PyPI installation notes below are
+also outdated and may not work. Sorry.
+
 quickswitch-i3 has a PyPI entry, so you can install it with ``pip
 install quickswitch-i3``. Alternatively, you can always manually run the
 setup file with ``python setup.py install``.
-
-Additionally, if you are an Arch user, you can install it from the AUR.
-The package is called ``quickswitch-i3``. The PKGBUILD is also included
-here.
-
-**NOTE**: The AUR package is no longer maintained. If you wish to
-maintain it, contact @OliverUv.
 
 Contributions
 -------------
