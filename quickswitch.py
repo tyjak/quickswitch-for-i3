@@ -41,6 +41,8 @@ __version__ = "2.6.0"
 workspace_number_re = re.compile("^(?P<number>\d+)(?P<name>.*)")
 default_dmenu_command = "dmenu -b -i -l 20"
 window_class_ignore_list = []
+follow = False
+followifempty = False
 
 
 def check_dmenu():
@@ -302,7 +304,10 @@ def move_window_here(window):
 
 def move_container_to_workspace(workspace):
     """Moves the current container to the selected workspace"""
-    return i3.msg(0, "move container to workspace {}".format(workspace))
+    ret = i3.msg(0, "move container to workspace {}".format(workspace))
+    if follow or (followifempty and is_current_workspace_empty()):
+        goto_workspace(workspace)
+    return ret
 
 
 def rename_workspace(old, new_number):
@@ -328,6 +333,11 @@ def get_current_workspace():
     """Get the name of the currently active workspace."""
     filtered = [ws for ws in i3.get_workspaces() if ws["focused"] is True]
     return filtered[0]["name"] if filtered else None
+
+
+def is_current_workspace_empty():
+    """Determines if the current workspace is empty."""
+    return i3.filter(nodes=[], type="workspace", focused=True) != []
 
 
 def cycle_numbered_workspaces(backwards=False):
@@ -375,41 +385,50 @@ def main():
                           "workspace with -e")
 
     mutgrp_2 = parser.add_mutually_exclusive_group()
-    mutgrp_2.add_argument("-s", "--scratchpad", default=False,
+    mutgrp_2.add_argument("-f", "--follow", default=False,
+                          action="store_true",
+                          help="Follow a moved container to the workspace it is moved to")
+    mutgrp_2.add_argument("-F", "--followifempty", default=False,
+                          action="store_true",
+                          help="Follow a moved container to the workspace it is moved to "
+                          "if the current workspace is empty after moving")
+
+    mutgrp_3 = parser.add_mutually_exclusive_group()
+    mutgrp_3.add_argument("-s", "--scratchpad", default=False,
                           action="store_true",
                           help="list scratchpad windows instead of "
                           "regular ones")
-    mutgrp_2.add_argument("-w", "--workspaces", default=False,
+    mutgrp_3.add_argument("-w", "--workspaces", default=False,
                           action="store_true",
                           help="list workspaces instead of windows")
-    mutgrp_2.add_argument("-e", "--empty", default=False,
+    mutgrp_3.add_argument("-e", "--empty", default=False,
                           action="store_true",
                           help="go to the first empty, numbered "
                           "workspace. Use with -j to send current "
                           "window to a new empty workspace")
-    mutgrp_2.add_argument("-E", "--nextempty", default=False,
+    mutgrp_3.add_argument("-E", "--nextempty", default=False,
                           action="store_true",
                           help="go to the next empty, numbered "
                           "workspace after the current one. Use "
                           "with -j to send current window to a new "
                           "empty workspace")
-    mutgrp_2.add_argument("-r", "--regex",
+    mutgrp_3.add_argument("-r", "--regex",
                           help="find the first window matching the "
                           "regex and focus/move it. Finds the first "
                           "matching workspace when used with -j")
-    mutgrp_2.add_argument("-g", "--degap", action="store_true",
+    mutgrp_3.add_argument("-g", "--degap", action="store_true",
                           help="make numbered workspaces consecutive "
                           "(remove gaps), does not work with other arguments")
-    mutgrp_2.add_argument("-n", "--next", default=False, action="store_true",
+    mutgrp_3.add_argument("-n", "--next", default=False, action="store_true",
                           help="go to the next (numbered) workspace")
-    mutgrp_2.add_argument("-p", "--previous", default=False,
+    mutgrp_3.add_argument("-p", "--previous", default=False,
                           action="store_true",
                           help="go to the previous (numbered) workspace")
-    mutgrp_2.add_argument("-u", "--urgent", default=False,
+    mutgrp_3.add_argument("-u", "--urgent", default=False,
                           action="store_true",
                           help="go to the first window with the "
                           "urgency hint set")
-    mutgrp_2.add_argument("-l", "--launch", default=False,
+    mutgrp_3.add_argument("-l", "--launch", default=False,
                           action="store_true",
                           help="if input to dmenu doesn't match any "
                           "given option, send the input to shell for "
@@ -428,6 +447,11 @@ def main():
                         "action to perform")
 
     args = parser.parse_args()
+
+    global follow
+    follow = args.follow
+    global followifempty
+    followifempty = args.followifempty
 
     # jumping to the next empty workspaces doesn't require going through all
     # the stuff below, as we don't need to call dmenu etc, so we just call it
