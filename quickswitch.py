@@ -432,17 +432,12 @@ def main():
     # jumping to the next empty workspaces doesn't require going through all
     # the stuff below, as we don't need to call dmenu etc, so we just call it
     # here and exit if the appropriate flag was given.
-    if args.empty:
+    if args.empty or args.nextempty:
+        target_ws = first_empty() if args.empty else next_empty()
         if args.journey:
-            sys.exit(*move_container_to_workspace(first_empty()))
+            sys.exit(*move_container_to_workspace(target_ws))
         else:
-            sys.exit(*goto_workspace(first_empty()))
-
-    if args.nextempty:
-        if args.journey:
-            sys.exit(*move_container_to_workspace(next_empty()))
-        else:
-            sys.exit(*goto_workspace(next_empty()))
+            sys.exit(*goto_workspace(target_ws))
 
     # likewise for degapping...
     if args.degap:
