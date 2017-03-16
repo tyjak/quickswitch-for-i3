@@ -42,7 +42,7 @@ workspace_number_re = re.compile("^(?P<number>\d+)(?P<name>.*)")
 default_dmenu_command = "dmenu -b -i -l 20"
 window_class_ignore_list = []
 follow = False
-followifempty = False
+follow_if_empty = False
 
 
 def check_dmenu():
@@ -305,7 +305,7 @@ def move_window_here(window):
 def move_container_to_workspace(workspace):
     """Moves the current container to the selected workspace"""
     ret = i3.msg(0, "move container to workspace {}".format(workspace))
-    if follow or (followifempty and is_current_workspace_empty()):
+    if follow or (follow_if_empty and is_current_workspace_empty()):
         goto_workspace(workspace)
     return ret
 
@@ -450,8 +450,8 @@ def main():
 
     global follow
     follow = args.follow
-    global followifempty
-    followifempty = args.followifempty
+    global follow_if_empty
+    follow_if_empty = args.followifempty
 
     # jumping to the next empty workspaces doesn't require going through all
     # the stuff below, as we don't need to call dmenu etc, so we just call it
