@@ -26,7 +26,7 @@ from setuptools import setup
 setup(name="quickswitch-i3",
       description="Quickly change to and locate windows in i3",
       long_description=open("README.rst").read(),
-      version="2.6.0",
+      version="2.7.0",
       author="OliverUv",
       author_email="oliver.uvman+quickswitch@gmail.com",
       url="https://github.com/OliverUv/quickswitch-for-i3",
