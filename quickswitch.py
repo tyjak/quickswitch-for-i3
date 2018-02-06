@@ -67,6 +67,35 @@ def get_windows():
     windows = parse_for_windows(i3.get_tree(), [])
     return create_lookup_table(windows)
 
+def get_workspace_tree():
+    """Return the partial i3 tree for the current workspace."""
+    for workspace in filter_nodes(lambda x: x['type'] == 'workspace', i3.get_tree()):
+        if contains_focus(workspace):
+            return workspace
+    else:
+        raise IndexError('no workspace contains a focused container')
+
+def filter_nodes(func, i3_tree):
+    """Find nodes in an i3 tree where `func' is True"""
+    if func(i3_tree):
+        yield i3_tree
+    for n in i3_tree.get('nodes', []):
+        for found in filter_nodes(func, n):
+            yield found
+
+def contains_focus(container):
+    """Does the current container contain a focused container."""
+    if container.get('focused', True):
+        return True
+    else:
+        return any(map(
+            contains_focus,
+            container.get('nodes', list())))
+
+def get_current_windows():
+    """Return the windows in the current workspace."""
+    windows = parse_for_windows(get_workspace_tree(), [])
+    return create_lookup_table(windows)
 
 def parse_for_windows(tree_dict, window_list):
     is_leaf_node = False
@@ -398,6 +427,9 @@ def main():
                           action="store_true",
                           help="list scratchpad windows instead of "
                           "regular ones")
+    mutgrp_3.add_argument("-c", "--current", default=False,
+                          action="store_true",
+                          help="list only window in current workspaces")
     mutgrp_3.add_argument("-w", "--workspaces", default=False,
                           action="store_true",
                           help="list workspaces instead of windows")
@@ -520,6 +552,9 @@ def main():
     if args.workspaces:
         lookup_func = get_workspaces
         unit = "workspace"
+    if args.current:
+        lookup_func = get_current_windows
+        unit = "window"
 
     action_func = focus
     dmenu_prompt = "focus {}".format(unit)
