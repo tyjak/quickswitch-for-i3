@@ -41,6 +41,7 @@ __version__ = "2.7.0"
 workspace_number_re = re.compile("^(?P<number>\d+)(?P<name>.*)")
 default_dmenu_command = "dmenu -b -i -l 20"
 window_class_ignore_list = []
+window_class_only_list = []
 follow = False
 follow_if_empty = False
 
@@ -298,6 +299,14 @@ def create_lookup_table(windows):
                 break
         if ignore_window:
             continue
+        if window_class_only_list:
+            only_window = True
+            for cn in window_class_only_list:
+                if win_class != cn:
+                    only_window = False
+                    break
+            if not only_window:
+                continue
         win_name = get_lookup_title(window)
         if win_name in lookup:
             # duplicate name of previous window
@@ -399,6 +408,11 @@ def set_ignore_class_list(str_list):
     window_class_ignore_list = str_list.split(",")
 
 
+def set_only_class_list(str_list):
+    global window_class_only_list
+    window_class_only_list = str_list.split(",")
+
+
 def main():
     parser = argparse.ArgumentParser(description="""quickswitch for i3""")
 
@@ -469,6 +483,9 @@ def main():
     parser.add_argument("-C", "--ignore-classes", default="",
                         help="comma separated list of window classes "
                         "to ignore")
+    parser.add_argument("-c", "--only-classes", default="",
+                        help="comma separated list of window classes "
+                        "to match only")
     parser.add_argument("-d", "--dmenu", default=default_dmenu_command,
                         help="dmenu command, executed within a shell")
     parser.add_argument("-i", "--insensitive", default=False,
@@ -503,6 +520,10 @@ def main():
     # initialize window_class_ignore_list
     if args.ignore_classes:
         set_ignore_class_list(args.ignore_classes)
+
+    # initialize window_class_only_list
+    if args.only_classes:
+        set_only_class_list(args.only_classes)
 
     # ...and regex search...
     if args.regex:
