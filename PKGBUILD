@@ -1,13 +1,14 @@
-# Maintainer: slowpoke <mail+aur at slowpoke dot io>
+# Maintainer: tyjak <dev at tyjak dot net>
+_pkgname='quickswitch-for-i3'
 pkgname='quickswitch-i3'
-pkgver=2.7.0
+pkgver=2.8.0
 pkgrel=1
 pkgdesc="quickly change to and locate windows in i3"
 arch=(any)
-url="https://github.com/OliverUv/quickswitch-for-i3"
+url="https://github.com/tyjak/quickswitch-for-i3"
 license=('WTFPL')
 groups=()
-depends=('i3-wm' 'python' 'i3-py-git' 'dmenu')
+depends=('i3-wm' 'python' 'python-i3-py' 'dmenu')
 makedepends=()
 provides=()
 conflicts=()
@@ -15,11 +16,11 @@ replaces=()
 backup=()
 options=(!emptydirs)
 install=
-source=("http://pypi.python.org/packages/source/q/quickswitch-i3/quickswitch-i3-${pkgver}.tar.gz")
-md5sums=('92ea72936ae4879b002e50ae165b1457')
+source=("https://github.com/tyjak/$_pkgname/archive/$pkgver.tar.gz")
+md5sums=('SKIP')
 
 package() {
-  cd "$srcdir/$pkgname-$pkgver"
+  cd "$srcdir/$_pkgname-$pkgver"
   python setup.py install --root="$pkgdir/" --optimize=1
 }
 
