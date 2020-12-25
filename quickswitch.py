@@ -441,12 +441,12 @@ def main():
                           action="store_true",
                           help="list scratchpad windows instead of "
                           "regular ones")
-    mutgrp_3.add_argument("-c", "--current", default=False,
-                          action="store_true",
-                          help="list only window in current workspaces")
     mutgrp_3.add_argument("-w", "--workspaces", default=False,
                           action="store_true",
                           help="list workspaces instead of windows")
+    mutgrp_3.add_argument("-W", "--windows", default=False,
+                          action="store_true",
+                          help="list only window in current workspaces")
     mutgrp_3.add_argument("-e", "--empty", default=False,
                           action="store_true",
                           help="go to the first empty, numbered "
@@ -573,7 +573,7 @@ def main():
     if args.workspaces:
         lookup_func = get_workspaces
         unit = "workspace"
-    if args.current:
+    if args.windows:
         lookup_func = get_current_windows
         unit = "window"
 
