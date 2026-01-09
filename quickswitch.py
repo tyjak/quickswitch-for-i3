@@ -27,6 +27,7 @@ import sys
 import argparse
 import subprocess
 import shutil
+from collections import OrderedDict
 
 try:
     import i3
@@ -313,7 +314,10 @@ def create_lookup_table(windows):
             # add "(win_id)" as suffix in attempt to make unique
             win_name = "{} ({})".format(win_name, str(win_id))
         lookup[win_name] = win_id
-    return lookup
+    return OrderedDict(sorted(lookup.items(),
+        key=lambda item:
+        (int(item[0].partition(' ')[0]) if item[0].isdigit()
+            else item[0].lower(), item)))
 
 
 def rename_nonunique(windows):
